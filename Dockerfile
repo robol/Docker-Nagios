@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 MAINTAINER Jason Rivers <jason@jasonrivers.co.uk>
 
 ENV NAGIOS_HOME            /opt/nagios
@@ -17,9 +17,9 @@ ENV NG_NAGIOS_CONFIG_FILE  ${NAGIOS_HOME}/etc/nagios.cfg
 ENV NG_CGI_DIR             ${NAGIOS_HOME}/sbin
 ENV NG_WWW_DIR             ${NAGIOS_HOME}/share/nagiosgraph
 ENV NG_CGI_URL             /cgi-bin
-ENV NAGIOS_BRANCH          nagios-4.4.5
-ENV NAGIOS_PLUGINS_BRANCH  release-2.2.1
-ENV NRPE_BRANCH            nrpe-3.2.1
+ENV NAGIOS_BRANCH          nagios-4.4.6
+ENV NAGIOS_PLUGINS_BRANCH  release-2.3.3
+ENV NRPE_BRANCH            nrpe-4.0.2
 
 
 RUN echo postfix postfix/main_mailer_type string "'Internet Site'" | debconf-set-selections  && \
@@ -46,14 +46,13 @@ RUN echo postfix postfix/main_mailer_type string "'Internet Site'" | debconf-set
         libdbd-mysql-perl                   \
         libdbi-dev                          \
         libdbi-perl                         \
-        libfreeradius-client-dev            \
-        libgd2-xpm-dev                      \
+        libfreeradius-dev                   \
+        libgdchart-gd2-xpm-dev              \
         libgd-gd2-perl                      \
         libjson-perl                        \
         libldap2-dev                        \
         libmysqlclient-dev                  \
         libnagios-object-perl               \
-        libnagios-plugin-perl               \
         libnet-snmp-perl                    \
         libnet-snmp-perl                    \
         libnet-tftp-perl                    \
@@ -70,7 +69,6 @@ RUN echo postfix postfix/main_mailer_type string "'Internet Site'" | debconf-set
         php-cli                             \
         php-gd                              \
         postfix                             \
-        python-pip                          \
         rsyslog                             \
         runit                               \
         smbclient                           \
@@ -162,16 +160,8 @@ RUN cd /tmp                                                          && \
     cd /tmp && rm -Rf nagiosgraph
 
 RUN cd /opt                                                                         && \
-    pip install pymssql                                                             && \
-    git clone https://github.com/willixix/naglio-plugins.git     WL-Nagios-Plugins  && \
-    git clone https://github.com/JasonRivers/nagios-plugins.git  JR-Nagios-Plugins  && \
     git clone https://github.com/justintime/nagios-plugins.git   JE-Nagios-Plugins  && \
-    git clone https://github.com/nagiosenterprises/check_mssql_collection.git   nagios-mssql  && \
-    chmod +x /opt/WL-Nagios-Plugins/check*                                          && \
-    chmod +x /opt/JE-Nagios-Plugins/check_mem/check_mem.pl                          && \
-    cp /opt/JE-Nagios-Plugins/check_mem/check_mem.pl ${NAGIOS_HOME}/libexec/           && \
-    cp /opt/nagios-mssql/check_mssql_database.py ${NAGIOS_HOME}/libexec/                         && \
-    cp /opt/nagios-mssql/check_mssql_server.py ${NAGIOS_HOME}/libexec/
+    cp /opt/JE-Nagios-Plugins/check_mem/check_mem.pl ${NAGIOS_HOME}/libexec/
 
 
 RUN sed -i.bak 's/.*\=www\-data//g' /etc/apache2/envvars

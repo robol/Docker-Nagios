@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:16.04
 MAINTAINER Jason Rivers <jason@jasonrivers.co.uk>
 
 ENV NAGIOS_HOME            /opt/nagios
@@ -19,7 +19,7 @@ ENV NG_WWW_DIR             ${NAGIOS_HOME}/share/nagiosgraph
 ENV NG_CGI_URL             /cgi-bin
 ENV NAGIOS_BRANCH          nagios-4.4.6
 ENV NAGIOS_PLUGINS_BRANCH  release-2.3.3
-ENV NRPE_BRANCH            nrpe-3.2.1
+ENV NRPE_BRANCH            nrpe-4.0.2
 
 
 RUN echo postfix postfix/main_mailer_type string "'Internet Site'" | debconf-set-selections  && \
@@ -46,7 +46,6 @@ RUN echo postfix postfix/main_mailer_type string "'Internet Site'" | debconf-set
         libdbd-mysql-perl                   \
         libdbi-dev                          \
         libdbi-perl                         \
-        libfreeradius-dev                   \
         libgdchart-gd2-xpm-dev              \
         libgd-gd2-perl                      \
         libjson-perl                        \
@@ -161,6 +160,7 @@ RUN cd /tmp                                                          && \
 
 RUN cd /opt                                                                         && \
     git clone https://github.com/justintime/nagios-plugins.git   JE-Nagios-Plugins  && \
+    chmod +x /opt/JE-Nagios-Plugins/check_mem/check_mem.pl                          && \
     cp /opt/JE-Nagios-Plugins/check_mem/check_mem.pl ${NAGIOS_HOME}/libexec/
 
 

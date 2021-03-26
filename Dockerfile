@@ -230,6 +230,15 @@ RUN echo "ServerName ${NAGIOS_FQDN}" > /etc/apache2/conf-available/servername.co
     ln -s /etc/apache2/conf-available/servername.conf /etc/apache2/conf-enabled/servername.conf    && \
     ln -s /etc/apache2/conf-available/timezone.conf /etc/apache2/conf-enabled/timezone.conf
 
+# Install VShell2
+RUN git clone https://github.com/NagiosEnterprises/nagiosvshell && \
+  cd nagiosvshell && \
+  git checkout 2.x && \
+  sed -i "s|'htpasswd_file'   => ''|'htpasswd_file'   => '/opt/nagios/etc/htpasswd.users'|g" config.php && \
+  ( ./install.php || true )
+
+ADD vshell2/vshell2.conf /etc/vshell2.conf
+
 EXPOSE 80
 
 VOLUME "${NAGIOS_HOME}/var" "${NAGIOS_HOME}/etc" "/var/log/apache2" "/opt/Custom-Nagios-Plugins" "/opt/nagiosgraph/var" "/opt/nagiosgraph/etc"
